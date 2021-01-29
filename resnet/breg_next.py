@@ -35,4 +35,3 @@ def BReG_NeXt(_X):
   return logits
 """
 
-if __name__ == '__main__':

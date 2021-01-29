@@ -54,7 +54,7 @@ class ResNetResidualBlock(ResidualBlock):
 
 class ResNetBasicBlock(ResNetResidualBlock):
     expansion = 1
-    def __init__(self, in_channels, out_channels, activation=nn.ReLU, *args, **kwargs):
+    def __init__(self, in_channels, out_channels, activation=nn.ELU, *args, **kwargs):
         super().__init__(in_channels, out_channels, *args, **kwargs)
         self.blocks = nn.Sequential(
             self.conv_bn(self.in_channels, self.out_channels, self.conv, bias=False, stride=self.downsampling),
@@ -66,6 +66,16 @@ class ResNetBasicBlock(ResNetResidualBlock):
         return nn.Sequential(OrderedDict({'conv': conv(in_channels, out_channels, *args, **kwargs), 
                           'bn': nn.BatchNorm2d(out_channels) }))
 
+
+class AnOtherResNetBlock(ResNetResidualBlock):
+    expansion=1
+    def __init__(self, in_channels, out_channels, *args, **kwargs):
+        super().__init__(in_channels, out_channels, *args, **kwargs)
+        self.blocks = nn.Sequential(
+            conv3x3(in_channels, out_channels, bias=False, stride=self.downsampling),
+            nn.Dropout2d(0.2),
+            activation_func(self.activation),
+        )
 
 
 class ResNetBottleNeckBlock(ResNetResidualBlock):
